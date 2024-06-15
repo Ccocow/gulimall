@@ -1,0 +1,82 @@
+package ${package}.${moduleName}.controller;
+
+import java.util.Arrays;
+import java.util.Map;
+
+import ${package}.result.Result;
+import ${package}.result.PageResult;
+import ${package}.${moduleName}.entity.${className}Entity;
+import ${package}.${moduleName}.service.I${className}Service;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import jakarta.annotation.Resource;
+import org.springframework.web.bind.annotation.*;
+
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@RestController
+@RequestMapping("${moduleName}/${pathName}")
+public class ${className}Controller {
+  @Resource
+  private I${className}Service ${classname}Service;
+
+  /**
+   * 分页查询
+   */
+  @PostMapping("/list")
+  public PageResult list(@RequestParam Map<String, Object> params) {
+    IPage<${className}Entity> res = ${classname}Service
+        .lambdaQuery()
+        .page(new Page<>(Long.parseLong(params.get("pageNum").toString()), Long.parseLong(params.get("pageSize").toString())));
+    return PageResult.success(res);
+  }
+
+
+  /**
+   * 信息
+   */
+  @GetMapping("/info/{${pk.attrname}}")
+  public Result info(@PathVariable("${pk.attrname}") ${pk.attrType} ${pk.attrname}) {
+          ${className}Entity res = ${classname}Service.getById(${pk.attrname});
+
+    return Result.success(res);
+  }
+
+  /**
+   * 保存
+   */
+  @PostMapping("/save")
+  public Result save(@RequestBody ${className}Entity ${classname}Entity) {
+          ${classname}Service.save(${classname}Entity);
+
+    return Result.success();
+  }
+
+  /**
+   * 修改
+   */
+  @PostMapping("/update")
+  public Result update(@RequestBody ${className}Entity ${classname}Entity) {
+          ${classname}Service.updateById(${classname}Entity);
+
+    return Result.success();
+  }
+
+  /**
+   * 删除
+   */
+  @PostMapping("/delete")
+  public Result delete(@RequestBody ${pk.attrType}[] ${pk.attrname}s) {
+          ${classname}Service.removeByIds(Arrays.asList(${pk.attrname}s));
+
+    return Result.success();
+  }
+
+}
