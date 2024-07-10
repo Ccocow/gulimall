@@ -25,3 +25,4 @@ buildNumber.properties
 .idea
 
 **/.gitignore
+/gulimall-common/gulimall-common.iml
