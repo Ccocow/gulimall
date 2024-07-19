@@ -1,5 +1,20 @@
 spring:
   application:
-    name: youlai-boot
-  profiles:
-    active: dev
+    name: gulimall-admin
+  cloud:
+    nacos:
+      discovery:
+        server-addr: @nacos.server@
+        username: @nacos.username@
+        password: @nacos.password@
+      config:
+        server-addr: @nacos.server@
+        group: @nacos.config.group@
+        username: @nacos.username@
+        password: @nacos.password@
+        namespace: admin
+        refresh-enabled: true
+  config:
+    import:
+      - optional:nacos:gulimall-admin.yml
+      - optional:nacos:datasource.yml

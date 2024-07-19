@@ -4,14 +4,18 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: @nacos.server@
+        username: @nacos.username@
+        password: @nacos.password@
       config:
-        server-addr: 127.0.0.1:8848
-        file-extension: yml
+        server-addr: @nacos.server@
+        group: @nacos.config.group@
+        username: @nacos.username@
+        password: @nacos.password@
         namespace: coupon
-        group: dev
+        refresh-enabled: true
   config:
     import:
-      - optional:nacos:gulimall-coupon.yml?refreshEnabled=true&group=dev
-      - optional:nacos:datasource.yml?refreshEnabled=true&group=dev
-      - optional:nacos:mybatis.yml?refreshEnabled=true&group=dev
+      - optional:nacos:gulimall-coupon.yml
+      - optional:nacos:datasource.yml
+      - optional:nacos:mybatis.yml

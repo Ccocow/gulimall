@@ -7,21 +7,22 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.youlai.system.common.result.PageResult;
 import com.youlai.system.common.result.Result;
 import com.youlai.system.common.util.ExcelUtils;
-import com.youlai.system.plugin.dupsubmit.annotation.PreventDuplicateSubmit;
+import com.youlai.system.enums.LogModuleEnum;
+import com.youlai.system.model.dto.UserImportDTO;
+import com.youlai.system.plugin.norepeat.annotation.PreventRepeatSubmit;
 import com.youlai.system.plugin.easyexcel.UserImportListener;
-import com.youlai.system.model.vo.UserImportVO;
 import com.youlai.system.model.form.UserForm;
 import com.youlai.system.model.entity.SysUser;
 import com.youlai.system.model.query.UserPageQuery;
-import com.youlai.system.model.vo.UserExportVO;
+import com.youlai.system.model.dto.UserExportDTO;
 import com.youlai.system.model.vo.UserInfoVO;
 import com.youlai.system.model.vo.UserPageVO;
+import com.youlai.system.plugin.syslog.annotation.LogAnnotation;
 import com.youlai.system.service.SysUserService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -38,9 +39,9 @@ import java.net.URLEncoder;
 import java.util.List;
 
 /**
- * 用户控制器
+ * 用户控制层
  *
- * @author haoxr
+ * @author Ray
  * @since 2022/10/16
  */
 @Tag(name = "02.用户接口")
@@ -53,8 +54,9 @@ public class SysUserController {
 
     @Operation(summary = "用户分页列表")
     @GetMapping("/page")
+    @LogAnnotation( value = "用户分页列表",module = LogModuleEnum.USER)
     public PageResult<UserPageVO> listPagedUsers(
-            @ParameterObject UserPageQuery queryParams
+             UserPageQuery queryParams
     ) {
         IPage<UserPageVO> result = userService.listPagedUsers(queryParams);
         return PageResult.success(result);
@@ -63,7 +65,7 @@ public class SysUserController {
     @Operation(summary = "新增用户")
     @PostMapping
     @PreAuthorize("@ss.hasPerm('sys:user:add')")
-    @PreventDuplicateSubmit
+    @PreventRepeatSubmit
     public Result saveUser(
             @RequestBody @Valid UserForm userForm
     ) {
@@ -149,9 +151,9 @@ public class SysUserController {
 
     @Operation(summary = "导入用户")
     @PostMapping("/import")
-    public Result importUsers(@Parameter(description = "部门ID") Long deptId, MultipartFile file) throws IOException {
-        UserImportListener listener = new UserImportListener(deptId);
-        String msg = ExcelUtils.importExcel(file.getInputStream(), UserImportVO.class, listener);
+    public Result importUsers( MultipartFile file) throws IOException {
+        UserImportListener listener = new UserImportListener();
+        String msg = ExcelUtils.importExcel(file.getInputStream(), UserImportDTO.class, listener);
         return Result.success(msg);
     }
 
@@ -162,8 +164,8 @@ public class SysUserController {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, "UTF-8"));
 
-        List<UserExportVO> exportUserList = userService.listExportUsers(queryParams);
-        EasyExcel.write(response.getOutputStream(), UserExportVO.class).sheet("用户列表")
+        List<UserExportDTO> exportUserList = userService.listExportUsers(queryParams);
+        EasyExcel.write(response.getOutputStream(), UserExportDTO.class).sheet("用户列表")
                 .doWrite(exportUserList);
     }
 }

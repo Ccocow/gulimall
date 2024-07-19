@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: gulimall-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: @nacos.server@
+        username: @nacos.username@
+        password: @nacos.password@
+      config:
+        server-addr: @nacos.server@
+        group: @nacos.config.group@
+        username: @nacos.username@
+        password: @nacos.password@
+        namespace: gateway
+        refresh-enabled: true
+  config:
+    import:
+      - optional:nacos:gulimall-gateway.yml

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.youlai.system.model.bo.UserBO;
 import com.youlai.system.model.entity.SysUser;
 import com.youlai.system.model.form.UserForm;
-import com.youlai.system.model.vo.UserImportVO;
+import com.youlai.system.model.dto.UserImportDTO;
 import com.youlai.system.model.vo.UserInfoVO;
 import com.youlai.system.model.vo.UserPageVO;
 import org.mapstruct.InheritInverseConfiguration;
@@ -22,22 +22,22 @@ import org.mapstruct.Mappings;
 public interface UserConverter {
 
     @Mappings({
-            @Mapping(target = "genderLabel", expression = "java(com.youlai.system.common.base.IBaseEnum.getLabelByValue(bo.getGender(), com.youlai.system.common.enums.GenderEnum.class))")
+            @Mapping(target = "genderLabel", expression = "java(com.youlai.system.common.base.IBaseEnum.getLabelByValue(bo.getGender(), com.youlai.system.enums.GenderEnum.class))")
     })
-    UserPageVO bo2PageVo(UserBO bo);
+    UserPageVO toPageVo(UserBO bo);
 
-    Page<UserPageVO> bo2PageVo(Page<UserBO> bo);
+    Page<UserPageVO> toPageVo(Page<UserBO> bo);
 
-    UserForm entity2Form(SysUser entity);
+    UserForm convertToForm(SysUser entity);
 
-    @InheritInverseConfiguration(name = "entity2Form")
-    SysUser form2Entity(UserForm entity);
+    @InheritInverseConfiguration(name = "convertToForm")
+    SysUser convertToEntity(UserForm entity);
 
     @Mappings({
             @Mapping(target = "userId", source = "id")
     })
     UserInfoVO toUserInfoVo(SysUser entity);
 
-    SysUser importVo2Entity(UserImportVO vo);
+    SysUser convertToEntity(UserImportDTO vo);
 
 }

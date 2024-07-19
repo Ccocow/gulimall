@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: gulimall-third-party
+  cloud:
+    nacos:
+      discovery:
+        server-addr: @nacos.server@
+        username: @nacos.username@
+        password: @nacos.password@
+      config:
+        server-addr: @nacos.server@
+        group: @nacos.config.group@
+        username: @nacos.username@
+        password: @nacos.password@
+        namespace: third-party
+        refresh-enabled: true
+  config:
+    import:
+      - optional:nacos:gulimall-third-party.yml

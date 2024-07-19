@@ -9,5 +9,4 @@ class GulimallProductApplicationTests {
   @Test
   void contextLoads() {
   }
-
 }
