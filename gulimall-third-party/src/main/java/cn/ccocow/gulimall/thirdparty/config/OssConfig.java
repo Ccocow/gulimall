@@ -7,15 +7,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
 
-@Configuration
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Configuration
+@RefreshScope
 public class OssConfig {
   /**
    * 将 <YOUR-ENDPOINT> 替换为 Endpoint，例如 oss-cn-hangzhou.aliyuncs.com
@@ -44,13 +47,8 @@ public class OssConfig {
 
   @Bean
   public OSS getOssClient() {
-    ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+    this.ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
     return ossClient;
-  }
-
-  @Bean
-  public String getHost() {
-    return "https://" + bucket + "." + endpoint;
   }
 
   @Bean
@@ -70,6 +68,8 @@ public class OssConfig {
 
   @PreDestroy
   public void onDestroy() {
-    ossClient.shutdown();
+    if (this.ossClient != null) {
+      this.ossClient.shutdown();
+    }
   }
 }

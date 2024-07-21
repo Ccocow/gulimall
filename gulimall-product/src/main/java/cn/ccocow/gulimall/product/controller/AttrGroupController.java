@@ -1,24 +1,21 @@
 package cn.ccocow.gulimall.product.controller;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import cn.ccocow.gulimall.result.Result;
-import cn.ccocow.gulimall.result.PageResult;
+import cn.ccocow.gulimall.product.domain.dto.PageDto;
 import cn.ccocow.gulimall.product.entity.AttrGroupEntity;
 import cn.ccocow.gulimall.product.service.IAttrGroupService;
-
+import cn.ccocow.gulimall.result.Result;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
 
 
 /**
  * 属性分组
  *
  * @author Ccocow
- * @email 
+ * @email
  * @date 2024-06-15 17:21:21
  */
 @RestController
@@ -30,31 +27,29 @@ public class AttrGroupController {
   /**
    * 分页查询
    */
-  @PostMapping("/list")
-  public PageResult list(@RequestParam Map<String, Object> params) {
-    IPage<AttrGroupEntity> res = attrGroupService
-        .lambdaQuery()
-        .page(new Page<>(Long.parseLong(params.get("pageNum").toString()), Long.parseLong(params.get("pageSize").toString())));
-    return PageResult.success(res);
+  @PostMapping("/page")
+  public Result<IPage<AttrGroupEntity>> page(@RequestBody PageDto pageDto) {
+    IPage<AttrGroupEntity> attrGroupEntityIPage = attrGroupService.selectByPage(pageDto);
+    return Result.success(attrGroupEntityIPage);
   }
 
 
   /**
    * 信息
    */
-  @GetMapping("/info/{attrGroupId}")
+  @GetMapping("/{attrGroupId}")
   public Result info(@PathVariable("attrGroupId") Long attrGroupId) {
-          AttrGroupEntity res = attrGroupService.getById(attrGroupId);
+    AttrGroupEntity res = attrGroupService.getById(attrGroupId);
 
     return Result.success(res);
   }
 
   /**
-   * 保存
+   * 添加
    */
-  @PostMapping("/save")
+  @PostMapping("")
   public Result save(@RequestBody AttrGroupEntity attrGroupEntity) {
-          attrGroupService.save(attrGroupEntity);
+    attrGroupService.save(attrGroupEntity);
 
     return Result.success();
   }
@@ -62,9 +57,9 @@ public class AttrGroupController {
   /**
    * 修改
    */
-  @PostMapping("/update")
+  @PutMapping("")
   public Result update(@RequestBody AttrGroupEntity attrGroupEntity) {
-          attrGroupService.updateById(attrGroupEntity);
+    attrGroupService.updateById(attrGroupEntity);
 
     return Result.success();
   }
@@ -72,9 +67,9 @@ public class AttrGroupController {
   /**
    * 删除
    */
-  @PostMapping("/delete")
+  @DeleteMapping("")
   public Result delete(@RequestBody Long[] attrGroupIds) {
-          attrGroupService.removeByIds(Arrays.asList(attrGroupIds));
+    attrGroupService.removeByIds(Arrays.asList(attrGroupIds));
 
     return Result.success();
   }

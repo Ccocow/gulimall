@@ -15,9 +15,9 @@ public class Result<T> implements Serializable {
 
     private String code;
 
-    private T data;
-
     private String msg;
+
+    private T data;
 
     public static <T> Result<T> success() {
         return success(null);

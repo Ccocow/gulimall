@@ -10,6 +10,9 @@ import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.model.MatchMode;
 import com.aliyun.oss.model.PolicyConditions;
 import jakarta.annotation.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -18,8 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@RefreshScope
 public class OssServiceImpl implements IOssService {
 
+  private static final Logger log = LoggerFactory.getLogger(OssServiceImpl.class);
   @Resource
   private OSS ossClient;
 
@@ -28,6 +33,7 @@ public class OssServiceImpl implements IOssService {
 
   @Override
   public Map<String, String> policy() {
+    log.warn("节点地址:{}", ossConfig.getEndpoint());
     Map<String, String> response = new HashMap<>();
     try {
       long expireEndTime = System.currentTimeMillis() + ossConfig.getExpireTime() * 1000;
@@ -43,7 +49,7 @@ public class OssServiceImpl implements IOssService {
       response.put("policy", encodedPolicy);
       response.put("signature", postSignature);
       response.put("dir", ossConfig.getDir());
-      response.put("host", ossConfig.getHost());
+      response.put("host", "https://" + ossConfig.getBucket() + "." + ossConfig.getEndpoint());
       response.put("fileName", UUID.randomUUID().toString().replace("-", "") + ".jpg");
     } catch (OSSException oe) {
       System.out.println("捕获一个OSSException，这意味着您的请求已发送到OSS，但由于某种原因被拒绝，并出现错误响应。");

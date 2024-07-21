@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @EnableDiscoveryClient
 @SpringBootApplication
-@ComponentScan(basePackages = {"cn.ccocow.gulimall.config", "cn.ccocow.gulimall.product"})
+@ComponentScan(basePackages = {"cn.ccocow.gulimall", "cn.ccocow.gulimall.product"})
 public class GulimallProductApplication {
 
   public static void main(String[] args) {
